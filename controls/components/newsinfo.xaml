@@ -1,0 +1,29 @@
+<UserControl x:Class="SMClient.Controls.NewsInfo"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:SMClient.Controls"
+             Height="51" Width="261.705">
+  <Grid MouseEnter="BaseVerBtn_MouseEnter" MouseLeave="BaseVerBtn_MouseLeave"
+        MouseLeftButtonDown="Grid_MouseLeftButtonDown" Height="49" Margin="0,0,10,2">
+    <Image MouseLeftButtonDown="Grid_MouseLeftButtonDown" x:Name="verImg"
+           Source="/SMClient;component/Resources/BaseBranch.png" Margin="0,0,152,0"/>
+    <Label MouseLeftButtonDown="Grid_MouseLeftButtonDown" MouseEnter="BaseVerBtn_MouseEnter"
+           MouseLeave="BaseVerBtn_MouseLeave" x:Name="baseVerBtn" VerticalContentAlignment="Center"
+           HorizontalContentAlignment="Center" Foreground="White"
+           FontFamily="/SMClient;component/Resources/Fonts/#Bourgeois Ultra" FontSize="25"
+           HorizontalAlignment="Center" VerticalAlignment="Center" Height="49" Width="86" Margin="12,0,154,0">Base</Label>
+    <Border IsHitTestVisible="false" BorderThickness="1" BorderBrush="Black" Margin="0,0,152,0"/>
+    <Border IsHitTestVisible="false" BorderThickness="1" BorderBrush="Black" Margin="0,0,-10,0"/>
+    <Grid MouseLeftButtonDown="Grid_MouseLeftButtonDown" x:Name="Background" Margin="98,0,-10,0">
+      <TextBlock MouseLeftButtonDown="Grid_MouseLeftButtonDown" MouseEnter="BaseVerBtn_MouseEnter"
+                 MouseLeave="BaseVerBtn_MouseLeave" x:Name="newsDate" Margin="2,0,3,32" TextWrapping="Wrap"
+                 Foreground="White"/>
+      <TextBlock MouseLeftButtonDown="Grid_MouseLeftButtonDown" MouseEnter="BaseVerBtn_MouseEnter"
+                 MouseLeave="BaseVerBtn_MouseLeave" x:Name="newsName" TextWrapping="WrapWithOverflow"
+                 Foreground="White" HorizontalAlignment="Right" Width="144" Height="32" VerticalAlignment="Bottom"
+                 Margin="0,0,13,0"/>
+    </Grid>
+  </Grid>
+</UserControl>

@@ -1,0 +1,18 @@
+<UserControl x:Class="SMClient.Controls.Components.HeaderButton"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:SMClient.Controls.Components"
+             x:Name="root">
+  <Grid>
+    <StackPanel MouseEnter="StackPanel_MouseEnter" MouseLeave="StackPanel_MouseLeave" Orientation="Horizontal"
+                IsEnabled="{Binding Path=IsEnabled, ElementName=root}">
+      <Image x:Name="btnIcon" HorizontalAlignment="Left" Source="{Binding ElementName=root, Path=ImageSource}"/>
+      <Label x:Name="btnLabel" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+             Margin="3,0,0,0" FontFamily="/SMClient;component/Resources/Fonts/#Bourgeois Ultra"
+             Foreground="White" HorizontalAlignment="Left" FontSize="{Binding ElementName=root, Path=FontSize}"
+             Content="{Binding ElementName=root, Path=Label}"/>
+    </StackPanel>
+  </Grid>
+</UserControl>
