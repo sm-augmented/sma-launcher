@@ -1,0 +1,21 @@
+<UserControl x:Class="SMClient.Controls.Components.LoadoutSlot"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:SMClient.Controls.Components"
+             xmlns:controls="clr-namespace:SMClient.Controls.Components"
+             x:Name="root" Height="51" Width="261.705">
+  <Grid MouseEnter="BaseVerBtn_MouseEnter" MouseLeave="BaseVerBtn_MouseLeave"
+        MouseLeftButtonDown="Grid_MouseLeftButtonDown" Height="49" Margin="0,0,10,2">
+    <Border IsHitTestVisible="false" BorderThickness="1" BorderBrush="Black" Margin="0,0,-10,0"/>
+    <Grid MouseLeftButtonDown="Grid_MouseLeftButtonDown" x:Name="Background" Margin="0,0,-10,0">
+      <Label MouseLeftButtonDown="Grid_MouseLeftButtonDown" MouseEnter="BaseVerBtn_MouseEnter"
+             MouseLeave="BaseVerBtn_MouseLeave" x:Name="baseVerBtn" VerticalContentAlignment="Center"
+             HorizontalContentAlignment="Left" Foreground="White"
+             FontFamily="/SMClient;component/Resources/Fonts/#Bourgeois Ultra" FontSize="25"
+             HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3,0,0,0" Width="259" Height="49"
+             Content="{Binding ElementName=root, Path=LabelName}"/>
+    </Grid>
+  </Grid>
+</UserControl>
