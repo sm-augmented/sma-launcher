@@ -1,0 +1,382 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--Project was exported from assembly: D:\Games\Warhammer 40.000 Space Marine Augmented\SMClient\SMClient.exe-->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{732E3769-DDC7-4162-A745-96022C527A7D}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AssemblyName>SMClient</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.0</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>true</Prefer32Bit>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>
+    </StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>resources\appicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Dropbox.Api">
+      <HintPath>..\lib\Dropbox.Api.dll</HintPath>
+    </Reference>
+    <Reference Include="Hardcodet.Wpf.TaskbarNotification">
+      <HintPath>..\lib\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\lib\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="LoadingIndicators.WPF">
+      <HintPath>..\lib\LoadingIndicators.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="Steamworks.NET">
+      <HintPath>..\lib\Steamworks.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Discord\Core.cs" />
+    <Compile Include="Models\Exceptions\UnableToUnpackException.cs" />
+    <Compile Include="XamlGeneratedNamespace\GeneratedInternalTypeHelper.cs" />
+    <Compile Include="Discord\ActivityManager.cs" />
+    <Compile Include="Discord\Constants.cs" />
+    <Compile Include="Discord\ImageManager.cs" />
+    <Compile Include="Discord\LobbyManager.cs" />
+    <Compile Include="Discord\StorageManager.cs" />
+    <Compile Include="Discord\StoreManager.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="Unlocker.cs" />
+    <Compile Include="App.cs" />
+    <Compile Include="MainWindow.cs" />
+    <Compile Include="Properties\Resources.cs" />
+    <Compile Include="Properties\Settings.cs" />
+    <Compile Include="Utils\DateHelper.cs" />
+    <Compile Include="Utils\CheckboxEventArgs.cs" />
+    <Compile Include="Utils\FileComparer.cs" />
+    <Compile Include="Utils\FileHelper.cs" />
+    <Compile Include="Utils\ImageExtensions.cs" />
+    <Compile Include="Utils\MessageBoxHelper.cs" />
+    <Compile Include="Utils\TryHelper.cs" />
+    <Compile Include="Steam\SteamLobby.cs" />
+    <Compile Include="Steam\Matchmaking.cs" />
+    <Compile Include="Models\News.cs" />
+    <Compile Include="Models\User.cs" />
+    <Compile Include="Models\ProfileInfo.cs" />
+    <Compile Include="Models\UserPing.cs" />
+    <Compile Include="Models\Package.cs" />
+    <Compile Include="Models\Exceptions\DiscordException.cs" />
+    <Compile Include="Models\Exceptions\SMException.cs" />
+    <Compile Include="Models\Exceptions\SteamNotRunningException.cs" />
+    <Compile Include="Models\Exceptions\UnableToRestoreException.cs" />
+    <Compile Include="Data\DropboxContentHasher.cs" />
+    <Compile Include="Data\Tasks\OnlineCounterTask.cs" />
+    <Compile Include="Data\Tasks\PersistenceTask.cs" />
+    <Compile Include="Data\Tasks\RegisterIngameTask.cs" />
+    <Compile Include="Data\Tasks\TokenRefreshTask.cs" />
+    <Compile Include="Data\Dropbox\DownloadedFile.cs" />
+    <Compile Include="Data\Managers\ArchiveManager.cs" />
+    <Compile Include="Data\Managers\NewsManager.cs" />
+    <Compile Include="Data\Managers\PackageManager.cs" />
+    <Compile Include="Data\Managers\DiscordManager.cs" />
+    <Compile Include="Data\Managers\OnlineManager.cs" />
+    <Compile Include="Data\Managers\PersistenceManager.cs" />
+    <Compile Include="Data\Managers\IntegrationManagers\SteamManager.cs" />
+    <Compile Include="Data\Managers\DataManagers\PrepareManager.cs" />
+    <Compile Include="Data\Managers\DataManagers\UnpackManager.cs" />
+    <Compile Include="Controls\Components\KVComboBoxItem.cs" />
+    <Compile Include="Controls\Components\AddonInfo.cs" />
+    <Compile Include="Controls\Components\LoadingBar.cs" />
+    <Compile Include="Controls\Components\NewsInfo.cs" />
+    <Compile Include="Controls\Components\PathSelector.cs" />
+    <Compile Include="Controls\Components\PlayButton.cs" />
+    <Compile Include="Controls\Components\PlayerInfo.cs" />
+    <Compile Include="Controls\Windows\MainScreens\HomeScreen.cs" />
+    <Compile Include="Controls\Windows\MainScreen.cs" />
+    <Compile Include="Controls\Windows\MainScreens\OnlineBlock.cs" />
+    <Compile Include="Controls\Windows\MainScreens\PlayScreen.cs" />
+    <Compile Include="Controls\Windows\MainScreens\SettingsScreen.cs" />
+    <Compile Include="Controls\Windows\WelcomeScreen.cs" />
+    <Compile Include="Controls\Components\Header.cs" />
+    <Compile Include="Controls\Components\HeaderButton.cs" />
+    <Compile Include="Controls\Components\ModalWindow.cs" />
+    <Compile Include="Controls\Components\SMCheckbox.cs" />
+    <Compile Include="Api\PersistenceApi.cs" />
+    <Compile Include="Api\AccountApi.cs" />
+    <Compile Include="Api\DataApi.cs" />
+    <Compile Include="Api\HashApi.cs" />
+    <Compile Include="Api\MetadataApi.cs" />
+    <Compile Include="Api\BaseApi.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resources\appicon.ico" />
+    <Resource Include="resources\background.png" />
+    <Resource Include="resources\background_empty.png" />
+    <Resource Include="resources\backgroundplay.png" />
+    <Resource Include="resources\basebranch.png" />
+    <Resource Include="resources\branchesselect.png" />
+    <Resource Include="resources\branchesselect_disabled.png" />
+    <Resource Include="resources\branchload.png" />
+    <Resource Include="resources\branchload_inv.png" />
+    <Resource Include="resources\button.png" />
+    <Resource Include="resources\changelog.png" />
+    <Resource Include="resources\changelog1.png" />
+    <Resource Include="resources\checkbox.png" />
+    <Resource Include="resources\checkbox_on.png" />
+    <Resource Include="resources\credits_ia.png" />
+    <Resource Include="resources\credits_ia_hover.png" />
+    <Resource Include="resources\decor1.png" />
+    <Resource Include="resources\decor2.png" />
+    <Resource Include="resources\decor3.png" />
+    <Resource Include="resources\downloadprogressbar.png" />
+    <Resource Include="resources\downloadprogressbarprogress.png" />
+    <Resource Include="resources\eagle.png" />
+    <Resource Include="resources\eagle1.png" />
+    <Resource Include="resources\eagle2.png" />
+    <Resource Include="resources\exterminatus.png" />
+    <Resource Include="resources\exterminatusplaybg.jpg" />
+    <Resource Include="resources\exterminatusplaybg.png" />
+    <Resource Include="resources\fonts\bourgeois_002520bold.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520bold_002520alt.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520bold_002520alt_002520italic.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520bold_002520condensed.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520bold_002520condensed_002520alt.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520bold_002520condensed_002520alt_002520italic.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520bold_002520condensed_002520italic.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520bold_002520italic.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520light.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520light_002520alt.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520light_002520alt_002520italic.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520light_002520condensed.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520light_002520condensed_002520alt.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520light_002520condensed_002520alt_002520italic.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520light_002520condensed_002520italic.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520light_002520italic.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520medium.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520medium_002520alt.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520medium_002520alt_002520italic.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520medium_002520condensed.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520medium_002520condensed_002520alt.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520medium_002520condensed_002520alt_002520italic.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520medium_002520condensed_002520italic.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520medium_002520italic.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520ultra.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520ultra_002520alt.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520ultra_002520alt_002520italic.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520ultra_002520condensed.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520ultra_002520condensed_002520alt.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520ultra_002520condensed_002520alt_002520italic.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520ultra_002520condensed_002520italic.otf" />
+    <Resource Include="resources\fonts\bourgeois_002520ultra_002520italic.otf" />
+    <Resource Include="resources\homebtn.png" />
+    <Resource Include="resources\homebtn_disabled.png" />
+    <Resource Include="resources\imagebackground.png" />
+    <Resource Include="resources\imagebackground_gr.png" />
+    <Resource Include="resources\imagebackground1.png" />
+    <Resource Include="resources\imagebackground2.png" />
+    <Resource Include="resources\imagebackground3.png" />
+    <Resource Include="resources\imagebackground4.png" />
+    <Resource Include="resources\imagebackground5.png" />
+    <Resource Include="resources\logoutbtn.png" />
+    <Resource Include="resources\logoutbtn_disabled.png" />
+    <Resource Include="resources\playbtn.png" />
+    <Resource Include="resources\playbtn_disabled.png" />
+    <Resource Include="resources\playbtn_hover.png" />
+    <Resource Include="resources\playbutton.png" />
+    <Resource Include="resources\playbutton_hover.png" />
+    <Resource Include="resources\playbuttonloaded.png" />
+    <Resource Include="resources\playbuttonnonloaded.png" />
+    <Resource Include="resources\profilebtn.png" />
+    <Resource Include="resources\profilebtn_disabled.png" />
+    <Resource Include="resources\profilebtn_hover.png" />
+    <Resource Include="resources\profilebutton.png" />
+    <Resource Include="resources\profilebutton_disabled.png" />
+    <Resource Include="resources\profilebutton_hover.png" />
+    <Resource Include="resources\scrolls.png" />
+    <Resource Include="resources\selector.png" />
+    <Resource Include="resources\serveroffline.png" />
+    <Resource Include="resources\serveronline.png" />
+    <Resource Include="resources\settings.png" />
+    <Resource Include="resources\settings_disabled.png" />
+    <Resource Include="resources\settings_hover.png" />
+    <Resource Include="resources\settingsbtn.png" />
+    <Resource Include="resources\settingsbtn_disabled.png" />
+    <Resource Include="resources\settingsbtn_hover.png" />
+    <Resource Include="resources\skull.png" />
+    <Resource Include="resources\skull1.png" />
+    <Resource Include="resources\skull2.png" />
+    <Resource Include="resources\skull3.png" />
+    <Resource Include="resources\textbox.png" />
+    <Resource Include="resources\versus.png" />
+    <Resource Include="resources\versus2.jpg" />
+    <Resource Include="resources\versus2.png" />
+    <Resource Include="resources\versusplaybg.jpg" />
+    <Content Include="discord_game_sdk.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="README.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="steam_appid.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="app.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Components\addoninfo.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Components\header.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Components\headerbutton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Components\loadingbar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Components\modalwindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Components\newsinfo.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Components\onlineblock.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Components\pathselector.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Components\playbutton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Components\playerinfo.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Components\smcheckbox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Windows\mainscreen.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Windows\MainScreens\homescreen.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Windows\MainScreens\playscreen.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Windows\MainScreens\settingsscreen.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Windows\welcomescreen.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="mainwindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 и x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="steam_api.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SMClientUpdater\SMClientUpdater.csproj">
+      <Project>{438d9788-44fd-4a08-b2ba-03ad7b8c2b01}</Project>
+      <Name>SMClientUpdater</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

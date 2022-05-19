@@ -1,0 +1,62 @@
+<UserControl x:Class="SMClient.Controls.LauncherWindow.SettingsScreen"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:SMClient.Controls.LauncherWindow"
+             xmlns:local1="clr-namespace:SMClient.Controls"
+             xmlns:local2="clr-namespace:SMClient.Controls.Components"
+             Height="623" Width="1027">
+    <Grid>
+        <Grid Background="#33000000" Margin="12,0,0,0"/>
+        <Border BorderThickness="1" BorderBrush="#BC686768" Margin="1027,0,-1,0" RenderTransformOrigin="0.5,0.5">
+            <UIElement.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="-1"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </UIElement.RenderTransform>
+        </Border>
+        <StackPanel Margin="25,20,37,26">
+            <local1:PathSelector x:Name="GameDir" LabelText="Game directory path" Height="38" Margin="0,0,0,0"
+                           VerticalAlignment="Top" IsFile="true"/>
+            <TextBlock Margin="10,0,0,0" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="947"
+                 Foreground="White" FontSize="14">
+        SpaceMarine.exe file is located in a directory that looks like this:
+            </TextBlock>
+            <TextBlock Margin="10,0,0,0" Height="29" VerticalAlignment="Top" HorizontalAlignment="Left" Width="947"
+                 Foreground="White" FontSize="14" Background="{x:Null}">
+        (E.g. C:\Program Files (x86)\Steam\steamapps\common\Warhammer 40,000 Space Marine)
+            </TextBlock>
+            <Grid Margin="10,0,0,0">
+                <local2:SMCheckbox x:Name="cbOldLauchWay" Checked="cbOldLauchWay_Checked" HorizontalAlignment="Left"/>
+                <Label Foreground="White" Margin="38,0,0,0">
+                    Use old launch way (if you're experiencing FPS drops)
+                </Label>
+            </Grid>
+            <Grid Margin="10,0,0,0">
+                <local2:SMCheckbox x:Name="cbWindowed" Checked="cbWindowed_Checked" HorizontalAlignment="Left"/>
+                <Label Foreground="White" Margin="38,0,0,0">
+                    Enable windowed mode (buggy)
+                </Label>
+            </Grid>
+            <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+                <FrameworkElement.Resources>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="FrameworkElement.Margin" Value="10,0,0,0"/>
+                    </Style>
+                </FrameworkElement.Resources>
+                <StackPanel Orientation="Horizontal">
+                    <Button Click="btnCheckIntegrity_Click" x:Name="btnCheckIntegrity" Content="Fix Mod Integrity"
+                  HorizontalAlignment="Left" VerticalAlignment="Center" Width="117" Height="25" Margin="10,7,0,7"/>
+                    <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="947"
+                     Foreground="White" FontSize="14">
+            Use this if new stuff in mod don't have models
+                    </TextBlock>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>
