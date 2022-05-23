@@ -31,7 +31,12 @@ namespace SMClient.Api
         public static void Initialize()
         {
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+#if DEBUG
+            BaseApi.ServerUrl = "https://localhost:7205";
+#else
             BaseApi.ServerUrl = "https://smserver.azurewebsites.net";
+#endif
+
             BaseApi.HttpClient = new HttpClient();
             BaseApi.HttpClient.BaseAddress = new Uri(BaseApi.ServerUrl);
             BaseApi.HttpClient.DefaultRequestHeaders.Accept.Clear();
@@ -49,7 +54,7 @@ namespace SMClient.Api
                 HttpClient = httpClient
             };
             config.HttpClient.Timeout = new TimeSpan(0, 20, 0);
-            BaseApi.DriveService = new DropboxClient("secret", config);
+            BaseApi.DriveService = new DropboxClient("GMYvCUyDLY0AAAAAAAAHmqhC69m6_8AjWfuYBLXGPKchtZ0ZWf--MfwdFM0rkkvZ", config);
         }
 
         public static void SetToken()
@@ -142,7 +147,7 @@ namespace SMClient.Api
 
         public static async Task<HttpResponseMessage> PostAsync(
           string url,
-          HttpContent content)
+          HttpContent content = null)
         {
             return await BaseApi.HttpClient.PostAsync(url, content);
         }

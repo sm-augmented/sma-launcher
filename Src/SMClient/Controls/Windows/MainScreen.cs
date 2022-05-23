@@ -88,7 +88,7 @@ namespace SMClient.Controls.LauncherWindow
     {
     }
 
-    private void OnlineManager_OnlineChecked(int total, Dictionary<string, UserPing> players) => this.Dispatcher.Invoke((Action) (() => { }));
+    private void OnlineManager_OnlineChecked(Dictionary<string, UserPing> players) => this.Dispatcher.Invoke((Action) (() => { }));
 
     public void OnLoggedIn()
     {

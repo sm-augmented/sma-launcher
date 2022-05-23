@@ -26,13 +26,13 @@ namespace SMClient.Data.Managers
 
     public static void Initialize() => OnlineCounterTask.CheckOnlineCount(new OnlineCounterTask.OnlineChecked(OnlineManager.Checked));
 
-    private static void Checked(int total, Dictionary<string, UserPing> players)
+    private static void Checked(Dictionary<string, UserPing> players)
     {
       OnlineManager.Players = players;
       OnlineCounterTask.OnlineChecked onlineChecked = OnlineManager.OnlineChecked;
       if (onlineChecked == null)
         return;
-      onlineChecked(total, players);
+      onlineChecked(players);
     }
 
     public static string GetUsername(bool useSteam)

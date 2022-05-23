@@ -27,7 +27,7 @@ namespace SMClient.Controls.LauncherWindow
       OnlineManager.OnlineChecked += new OnlineCounterTask.OnlineChecked(this.OnlineManager_OnlineChecked);
     }
 
-    private void OnlineManager_OnlineChecked(int total, Dictionary<string, UserPing> players) => this.Dispatcher.Invoke((Action) (() =>
+    private void OnlineManager_OnlineChecked(Dictionary<string, UserPing> players) => this.Dispatcher.Invoke((Action) (() =>
     {
       this.playerList.Children.Clear();
       foreach (KeyValuePair<string, UserPing> player in players)

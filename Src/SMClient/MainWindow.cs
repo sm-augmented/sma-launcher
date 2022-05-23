@@ -168,29 +168,6 @@ namespace SMClient
             }
         }
 
-        protected override void OnClosed(EventArgs e)
-        {
-            if (!CanBeClosed)
-                return;
-
-            Task.Run(() =>
-            {
-                try
-                {
-                    Unlocker.Close();
-                    PersistenceApi.UnregisterPlayerIngame().Wait();
-                    SteamManager.Shutdown();
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(new Exception("Unable to properly exit", ex));
-                }
-
-                Logger.Flush();
-                this.Dispatcher.Invoke((Action)(() => Application.Current.Shutdown()));
-            });
-        }
-
         private void btnMinimize_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) => this.WindowState = WindowState.Minimized;
 
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
