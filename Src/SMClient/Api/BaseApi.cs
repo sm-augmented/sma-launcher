@@ -31,11 +31,11 @@ namespace SMClient.Api
         public static void Initialize()
         {
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
-#if DEBUG
-            BaseApi.ServerUrl = "https://localhost:7205";
-#else
+//#if DEBUG
+//            BaseApi.ServerUrl = "https://localhost:7205";
+//#else
             BaseApi.ServerUrl = "https://smserver.azurewebsites.net";
-#endif
+//#endif
 
             BaseApi.HttpClient = new HttpClient();
             BaseApi.HttpClient.BaseAddress = new Uri(BaseApi.ServerUrl);

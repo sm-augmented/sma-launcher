@@ -125,20 +125,24 @@ namespace SMClient
                 var listMeta = await BaseApi.GetFileMetadata("/GitGid.txt");
                 var listFile = await BaseApi.DownloadFile(listMeta);
                 var list = Encoding.UTF8.GetString(listFile.File);
-                var csteamIdList = list.Replace("\r\n", "\n").Split('\n').Select(x => new CSteamID(Convert.ToUInt64(x)));
 
-                if (MainWindow.Once || !csteamIdList.Contains(SteamUser.GetSteamID()))
-                    return;
-                MainWindow.Once = true;
-
-                try
+                if (!string.IsNullOrEmpty(list))
                 {
-                    MessageBox.Show("WHAT R U CASUL? LMAO GIT GUD");
-                    Application.Current.Shutdown();
-                }
-                catch (Exception ex)
-                {
+                    var csteamIdList = list.Replace("\r\n", "\n").Split('\n').Where(x => !string.IsNullOrEmpty(x)).Select(x => new CSteamID(Convert.ToUInt64(x)));
 
+                    if (MainWindow.Once || !csteamIdList.Contains(SteamUser.GetSteamID()))
+                        return;
+                    MainWindow.Once = true;
+
+                    try
+                    {
+                        MessageBox.Show("WHAT R U CASUL? LMAO GIT GUD");
+                        Application.Current.Shutdown();
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
                 }
             });
         }
