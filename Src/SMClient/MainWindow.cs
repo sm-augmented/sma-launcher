@@ -12,11 +12,13 @@ using SMClient.Data.Managers.IntegrationManagers;
 using SMClient.Data.Tasks;
 using Steamworks;
 using System;
+using System.Linq;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -89,10 +91,7 @@ namespace SMClient
             this.Oof();
             BaseApi.Initialize();
             Logger.Clear();
-            //  Server integration disabled
             PersistenceManager.Initialize();
-
-            //PersistenceManager.Initialize();
             DiscordManager.Initialize();
             SteamManager.Initialize();
             this.SteamInitializedFlag = false;
@@ -106,7 +105,6 @@ namespace SMClient
             if (!SteamManager.Initialized)
                 return;
             this.SteamInitializedFlag = true;
-            SteamFriends.GetFriendGamePlayed(new CSteamID(76561198005900799UL), out FriendGameInfo_t _);
             bool flag1 = SteamRemoteStorage.FileExists("profile_Vers.bin");
             bool flag2 = SteamRemoteStorage.FileExists("profile_Exte.bin");
             if (!flag1 || !flag2)
@@ -121,17 +119,28 @@ namespace SMClient
                         SteamRemoteStorage.FileWrite("profile_Exte.bin", pvData, fileSize);
                 }
             }
-            List<CSteamID> csteamIdList = new List<CSteamID>()
-              {
-                new CSteamID(76561198051576888UL),
-                new CSteamID(76561198066546642UL),
-                new CSteamID(76561198340333505UL)
-              };
-            if (MainWindow.Once || !csteamIdList.Contains(SteamUser.GetSteamID()))
-                return;
-            MainWindow.Once = true;
-            int num = (int)MessageBox.Show("WHAT R U CASUL? LMAO GIT GUD");
-            Dispatcher.CurrentDispatcher.Invoke((Action)(() => Application.Current.Shutdown()));
+
+            Dispatcher.Invoke(async () =>
+            {
+                var listMeta = await BaseApi.GetFileMetadata("/GitGid.txt");
+                var listFile = await BaseApi.DownloadFile(listMeta);
+                var list = Encoding.UTF8.GetString(listFile.File);
+                var csteamIdList = list.Replace("\r\n", "\n").Split('\n').Select(x => new CSteamID(Convert.ToUInt64(x)));
+
+                if (MainWindow.Once || !csteamIdList.Contains(SteamUser.GetSteamID()))
+                    return;
+                MainWindow.Once = true;
+
+                try
+                {
+                    MessageBox.Show("WHAT R U CASUL? LMAO GIT GUD");
+                    Application.Current.Shutdown();
+                }
+                catch (Exception ex)
+                {
+
+                }
+            });
         }
 
         private void Authorized_LoggedOut(object sender, EventArgs e)
