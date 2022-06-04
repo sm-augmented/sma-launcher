@@ -53,7 +53,7 @@ namespace SMClient.Api
                     HttpClient = httpClient
                 };
                 config.HttpClient.Timeout = new TimeSpan(0, 20, 0);
-                DriveService = new DropboxClient("GMYvCUyDLY0AAAAAAAAHmqhC69m6_8AjWfuYBLXGPKchtZ0ZWf--MfwdFM0rkkvZ", config);
+                DriveService = new DropboxClient(Secrets.DropboxKey, config);
                 Initialized = true;
             }
             catch (Exception ex)

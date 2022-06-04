@@ -91,6 +91,7 @@
     <Compile Include="Managers\AuthManager.cs" />
     <Compile Include="Managers\UpdateManager.cs" />
     <Compile Include="Models\Exceptions\UnableToUnpackException.cs" />
+    <Compile Include="Secrets.cs" />
     <Compile Include="XamlGeneratedNamespace\GeneratedInternalTypeHelper.cs" />
     <Compile Include="Discord\ActivityManager.cs" />
     <Compile Include="Discord\Constants.cs" />
