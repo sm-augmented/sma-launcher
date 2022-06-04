@@ -31,18 +31,8 @@ namespace SMClient.Data.Tasks
         {
           try
           {
-            int total = await PersistenceApi.GetPlayerCount("");
-            if (PackageManager.Packages != null)
-            {
-              foreach (Package package1 in PackageManager.Packages)
-              {
-                Package package = package1;
-                package.Online = await PersistenceApi.GetPlayerCount(package1.Name);
-                package = (Package) null;
-              }
-            }
             Dictionary<string, UserPing> usersDetails = await PersistenceApi.GetUsersDetails();
-            func(total, usersDetails);
+            func(usersDetails);
           }
           catch (Exception ex)
           {
@@ -53,6 +43,6 @@ namespace SMClient.Data.Tasks
       }));
     }
 
-    public delegate void OnlineChecked(int total, Dictionary<string, UserPing> players);
+    public delegate void OnlineChecked(Dictionary<string, UserPing> players);
   }
 }

@@ -34,7 +34,7 @@ namespace SMClient
         private static void ExceptionHandler(Exception ex)
         {
             Logger.LogError(ex);
-            //RegisterIngameTask.RegisterPlayerIngame("Launcher");
+            RegisterIngameTask.RegisterPlayerIngame("Launcher");
             EventHandler onException = Unlocker.OnException;
             if (onException == null)
                 return;
@@ -101,6 +101,11 @@ namespace SMClient
             }
         }
 
+        public static void CloseNoWait()
+        {
+            Unlocker.spaceMarine?.Kill();
+        }
+
         internal static void Close()
         {
             Unlocker.spaceMarine?.Kill();
@@ -125,6 +130,8 @@ namespace SMClient
                 Unlocker.fsWatch.Dispose();
                 Unlocker.fsWatch = (FileSystemWatcher)null;
             }
+
+            RegisterIngameTask.RegisterPlayerIngame("Launcher");
 
             try
             {

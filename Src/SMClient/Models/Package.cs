@@ -9,37 +9,39 @@ using System.Collections.Generic;
 
 namespace SMClient.Models
 {
-  [Serializable]
-  public class Package
-  {
-    public string Name { get; set; }
+    [Serializable]
+    public class Package
+    {
+        public string Name { get; set; }
 
-    public string UserfriendlyName { get; set; }
+        public string UserfriendlyName { get; set; }
 
-    public string Description { get; set; }
+        public string Description { get; set; }
 
-    public string Version { get; set; }
+        public string Version { get; set; }
 
-    public bool IsVisible { get; set; }
+        public bool IsVisible { get; set; }
 
-    public bool IsStatic { get; set; }
+        public bool IsStatic { get; set; }
 
-    public bool CountedAsBranch { get; set; }
+        public bool CountedAsBranch { get; set; }
 
-    public int FlatPriority { get; set; }
+        public int FlatPriority { get; set; }
 
-    public int Online { get; set; }
+        public int Online { get; set; }
 
-    public string DependenciesRaw { get; set; }
+        public string DependenciesRaw { get; set; }
 
-    public List<Package> Dependencies { get; set; }
+        public List<Package> Dependencies { get; set; }
 
-    public bool IsUpdated { get; set; }
+        public bool IsUpdated { get; set; }
 
-    public bool IsLoaded { get; set; }
+        public bool IsLoaded { get; set; }
 
-    public Package() => this.Dependencies = new List<Package>();
+        public List<string> Roles { get; set; }
 
-    public override string ToString() => this.Name;
-  }
+        public Package() => this.Dependencies = new List<Package>();
+
+        public override string ToString() => this.Name;
+    }
 }

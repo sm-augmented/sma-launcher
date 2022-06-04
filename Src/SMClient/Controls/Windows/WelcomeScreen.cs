@@ -9,12 +9,14 @@ using SMClient.Data.Managers;
 using SMClient.Data.Managers.IntegrationManagers;
 using SMClient.Data.Tasks;
 using SMClient.Utils;
+using Steamworks;
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -49,7 +51,7 @@ namespace SMClient.Controls.LauncherWindow
         public void SetOnline(bool isAlive)
         {
             //if (isAlive)
-                
+
             //else
             //    this.Dispatcher.Invoke((Action)(() =>
             //   {
@@ -79,20 +81,38 @@ namespace SMClient.Controls.LauncherWindow
         {
             if (!WelcomeScreen.IsSteamRunning)
             {
-                Dispatcher.Invoke((Action)(() =>
+                Dispatcher.Invoke(() =>
                 {
                     int num = (int)MessageBoxHelper.ShowError("Steam is not running");
                     Application.Current.Shutdown();
-                }));
+                });
             }
             else
             {
                 MainWindow.ShowLoading("Signing in...");
                 await WaitForSteamInit();
+
+                var steamid = SteamUser.GetSteamID();
+
+                var listMeta = await BaseApi.GetFileMetadata("/Testers.txt");
+                var listFile = await BaseApi.DownloadFile(listMeta);
+                var list = Encoding.UTF8.GetString(listFile.File);
+
+                if (!string.IsNullOrEmpty(list))
+                {
+                    var csteamIdList = list.Replace("\r\n", "\n").Split('\n').Where(x => !string.IsNullOrEmpty(x)).Select(x => new CSteamID(Convert.ToUInt64(x)));
+
+                    OnlineManager.Account = new Models.User()
+                    {
+                        Login = steamid.ToString(),
+                        SteamID = steamid.ToString(),
+                        Role = csteamIdList.Contains(SteamUser.GetSteamID()) ? "tester" : "user"
+                    };
+                }
+                
+
                 MainWindow.HideLoading();
                 AfterLogin();
-                // ISSUE: reference to a compiler-generated method
-                //welcomeScreen.Dispatcher.Invoke(new Action(welcomeScreen.\u003CAuthorizeFromSettings\u003Eb__12_1));
             }
         }
 
@@ -126,8 +146,6 @@ namespace SMClient.Controls.LauncherWindow
                     int num = await OnlineManager.AuthenticateBySteam() ? 1 : 0;
                 }
                 MainWindow.HideLoading();
-                // ISSUE: reference to a compiler-generated method
-                //welcomeScreen.Dispatcher.Invoke(new Action(welcomeScreen.\u003CAuthorizeFromSettings\u003Eb__12_1));
                 token = (string)null;
             }
         }

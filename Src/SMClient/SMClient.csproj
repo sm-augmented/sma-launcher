@@ -89,6 +89,7 @@
   <ItemGroup>
     <Compile Include="Discord\Core.cs" />
     <Compile Include="Models\Exceptions\UnableToUnpackException.cs" />
+    <Compile Include="Secrets.cs" />
     <Compile Include="XamlGeneratedNamespace\GeneratedInternalTypeHelper.cs" />
     <Compile Include="Discord\ActivityManager.cs" />
     <Compile Include="Discord\Constants.cs" />
