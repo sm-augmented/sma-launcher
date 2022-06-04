@@ -14,7 +14,7 @@ namespace SMClient
     private static string logPath = "loglog.log";
     private static StreamWriter logFile;
 
-    public static void Clear()
+    public static void Create()
     {
       if (File.Exists(Logger.logPath))
         File.Delete(Logger.logPath);

@@ -88,6 +88,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Discord\Core.cs" />
+    <Compile Include="Managers\AuthManager.cs" />
+    <Compile Include="Managers\UpdateManager.cs" />
     <Compile Include="Models\Exceptions\UnableToUnpackException.cs" />
     <Compile Include="Secrets.cs" />
     <Compile Include="XamlGeneratedNamespace\GeneratedInternalTypeHelper.cs" />
@@ -115,32 +117,28 @@
     <Compile Include="Steam\Matchmaking.cs" />
     <Compile Include="Models\News.cs" />
     <Compile Include="Models\User.cs" />
-    <Compile Include="Models\ProfileInfo.cs" />
+    <Compile Include="Managers\ProfileInfoManager.cs" />
     <Compile Include="Models\UserPing.cs" />
     <Compile Include="Models\Package.cs" />
     <Compile Include="Models\Exceptions\DiscordException.cs" />
     <Compile Include="Models\Exceptions\SMException.cs" />
     <Compile Include="Models\Exceptions\SteamNotRunningException.cs" />
     <Compile Include="Models\Exceptions\UnableToRestoreException.cs" />
-    <Compile Include="Data\DropboxContentHasher.cs" />
-    <Compile Include="Data\Tasks\OnlineCounterTask.cs" />
-    <Compile Include="Data\Tasks\PersistenceTask.cs" />
-    <Compile Include="Data\Tasks\RegisterIngameTask.cs" />
-    <Compile Include="Data\Tasks\TokenRefreshTask.cs" />
-    <Compile Include="Data\Dropbox\DownloadedFile.cs" />
-    <Compile Include="Data\Managers\ArchiveManager.cs" />
-    <Compile Include="Data\Managers\NewsManager.cs" />
-    <Compile Include="Data\Managers\PackageManager.cs" />
-    <Compile Include="Data\Managers\DiscordManager.cs" />
-    <Compile Include="Data\Managers\OnlineManager.cs" />
-    <Compile Include="Data\Managers\PersistenceManager.cs" />
-    <Compile Include="Data\Managers\IntegrationManagers\SteamManager.cs" />
-    <Compile Include="Data\Managers\DataManagers\PrepareManager.cs" />
-    <Compile Include="Data\Managers\DataManagers\UnpackManager.cs" />
+    <Compile Include="Utils\DropboxContentHasher.cs" />
+    <Compile Include="Tasks\OnlineCounterTask.cs" />
+    <Compile Include="Tasks\RegisterIngameTask.cs" />
+    <Compile Include="Models\Dropbox\DownloadedFile.cs" />
+    <Compile Include="Managers\ArchiveManager.cs" />
+    <Compile Include="Managers\NewsManager.cs" />
+    <Compile Include="Managers\PackageManager.cs" />
+    <Compile Include="Managers\DiscordManager.cs" />
+    <Compile Include="Managers\OnlineManager.cs" />
+    <Compile Include="Managers\SteamManager.cs" />
+    <Compile Include="Managers\PrepareManager.cs" />
+    <Compile Include="Managers\UnpackManager.cs" />
     <Compile Include="Controls\Components\KVComboBoxItem.cs" />
     <Compile Include="Controls\Components\AddonInfo.cs" />
     <Compile Include="Controls\Components\LoadingBar.cs" />
-    <Compile Include="Controls\Components\NewsInfo.cs" />
     <Compile Include="Controls\Components\PathSelector.cs" />
     <Compile Include="Controls\Components\PlayButton.cs" />
     <Compile Include="Controls\Components\PlayerInfo.cs" />
@@ -155,10 +153,8 @@
     <Compile Include="Controls\Components\ModalWindow.cs" />
     <Compile Include="Controls\Components\SMCheckbox.cs" />
     <Compile Include="Api\PersistenceApi.cs" />
-    <Compile Include="Api\AccountApi.cs" />
     <Compile Include="Api\DataApi.cs" />
     <Compile Include="Api\HashApi.cs" />
-    <Compile Include="Api\MetadataApi.cs" />
     <Compile Include="Api\BaseApi.cs" />
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
@@ -303,10 +299,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\Components\newsinfo.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Controls\Components\onlineblock.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -379,5 +371,6 @@
       <Name>SMClientUpdater</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

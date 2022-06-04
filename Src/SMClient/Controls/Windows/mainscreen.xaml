@@ -30,7 +30,7 @@
         </TextBlock>
       </Grid>
       <components:Header x:Name="header" HomeButtonClick="Header_HomeButtonClick" PlayButtonClick="Header_PlayButtonClick"
-                         SettingsButtonClick="Header_SettingsButtonClick" ProfileButtonClick="Header_ProfileButtonClick"/>
+                         SettingsButtonClick="Header_SettingsButtonClick"/>
       <local:OnlineBlock Grid.Row="1" Margin="1027,5,0,-5"/>
       <TextBlock Margin="287,573,481,34" Grid.Row="1" Foreground="White" FontSize="18" FontWeight="Bold">
         You can join others through the SMA Steam chat, click
