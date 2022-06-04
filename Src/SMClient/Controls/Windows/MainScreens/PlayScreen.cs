@@ -1,20 +1,11 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: SMClient.Controls.LauncherWindow.PlayScreen
-// Assembly: SMClient, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 8FEFC3E2-D24F-47DA-A11F-015A247C9191
-// Assembly location: D:\Games\Warhammer 40.000 Space Marine Augmented\SMClient\SMClient.exe
-
-using Models.Exceptions;
-using SMClient.Data.Managers;
-using SMClient.Data.Managers.DataManagers;
+﻿using Models.Exceptions;
+using SMClient.Managers;
 using SMClient.Models;
 using SMClient.Models.Exceptions;
+using SMClient.Tasks;
 using SMClient.Utils;
 using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,14 +13,11 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace SMClient.Controls.LauncherWindow
 {
     public partial class PlayScreen : UserControl, IComponentConnector
     {
-        public ImageSource VersusBackground;
-        public ImageSource ExterminatusBackground;
         private bool isFirstLaunch;
         private Package launchedWith;
         private Package currentBranch;
@@ -39,9 +27,6 @@ namespace SMClient.Controls.LauncherWindow
         private List<Package> selectedPackages;
         public static readonly DependencyProperty IsButtonsEnabledProperty = DependencyProperty.Register(nameof(IsButtonsEnabled), typeof(bool), typeof(PlayScreen));
         private AddonInfo current;
-        private bool PackagesDownloadedFlag;
-
-        public event EventHandler BranchChanged;
 
         public event EventHandler IsButtonsEnabledChange;
 
@@ -56,21 +41,8 @@ namespace SMClient.Controls.LauncherWindow
             this.allPackages = new List<Package>();
             this.selectedPackages = new List<Package>();
             this.InitializeComponent();
-            Unlocker.OnException += new EventHandler(this.Unlocker_OnException);
-            Unlocker.OnGameExit += new EventHandler(this.Unlocker_OnGameExit);
-            Unlocker.OnGameStarted += new EventHandler(this.Unlocker_OnGameStarted);
-            this.BranchChanged += new EventHandler(this.PlayScreen_BranchChanged);
-            this.VersusBackground = (ImageSource)new BitmapImage(new Uri("pack://application:,,,/SMClient;component/Resources/ImageBackground1.png"));
-            this.ExterminatusBackground = (ImageSource)new BitmapImage(new Uri("pack://application:,,,/SMClient;component/Resources/ImageBackground3.png"));
             this.exBr.IsEnabled = this.versusBr.IsEnabled = false;
-            this.PackagesDownloadedFlag = false;
-            PackageManager.PackagesDownloaded += new EventHandler(this.PackageManager_PackagesDownloaded);
-            if (!PackageManager.IsPackagesDownloaded || this.PackagesDownloadedFlag)
-                return;
-            this.PackageManager_PackagesDownloaded((object)null, (EventArgs)null);
         }
-
-        private void PlayScreen_BranchChanged(object sender, EventArgs e) => this.UpdatePackagesList();
 
         private void UpdatePackagesList() => this.Dispatcher.Invoke((Action)(() =>
        {
@@ -114,113 +86,105 @@ namespace SMClient.Controls.LauncherWindow
             Settings.Instance.Save();
         }
 
-        private void PackageManager_PackagesDownloaded(object sender, EventArgs e)
+        public void PackagesDownloaded()
         {
-            this.PackagesDownloadedFlag = true;
-            this.Dispatcher.Invoke((Action)(() => this.exBr.IsEnabled = this.versusBr.IsEnabled = true));
+            this.exBr.IsEnabled = this.versusBr.IsEnabled = true;
             this.versus = this.currentBranch = PackageManager.Packages.FirstOrDefault<Package>((Func<Package, bool>)(x => x.Name == "Versus"));
             this.exterminatus = PackageManager.Packages.FirstOrDefault<Package>((Func<Package, bool>)(x => x.Name == "Exterminatus"));
-            this.Dispatcher.Invoke((Action)(() =>
-           {
-               if (Settings.Instance.LastSelection == null)
-                   return;
-               if (Settings.Instance.LastSelection == "versus")
-                   this.switchToVersus_MouseLeftButtonDown((object)null, (MouseButtonEventArgs)null);
-               else
-                   this.switchToExt_MouseLeftButtonDown((object)null, (MouseButtonEventArgs)null);
-           }));
+            if (Settings.Instance.LastSelection == "versus")
+                this.switchToVersus_MouseLeftButtonDown((object)null, (MouseButtonEventArgs)null);
+            else
+                this.switchToExt_MouseLeftButtonDown((object)null, (MouseButtonEventArgs)null);
             this.allPackages = PackageManager.Packages.Where<Package>((Func<Package, bool>)(x => x.IsVisible)).ToList<Package>();
             this.UpdatePackagesList();
         }
 
-        private void OnGameStart(object sender, EventArgs e)
+        private void StartGame(object sender, EventArgs e)
         {
-            MainWindow.CanBeClosed = false;
-            EventHandler buttonsEnabledChange = this.IsButtonsEnabledChange;
-            if (buttonsEnabledChange != null)
-                buttonsEnabledChange((object)false, (EventArgs)null);
-            MainWindow.ShowLoading("Preparing data...");
-            Logger.LogInfo("OnGameStart: Preparing data");
-            try
+            Task.Run(async () =>
             {
-                this.launchedWith = this.selectedPackages.OrderByDescending<Package, int>((Func<Package, int>)(x => x.FlatPriority)).FirstOrDefault<Package>((Func<Package, bool>)(x => x.CountedAsBranch)) ?? this.currentBranch;
-                Task.Run((Action)(() =>
-               {
-                   Unlocker.StartGame(this.currentBranch, this.launchedWith, this.selectedPackages);
-                   DiscordManager.SetIngame(this.launchedWith?.Name ?? this.currentBranch.Name);
-               }));
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-                this.Unlocker_OnException((object)ex, (EventArgs)null);
-            }
+                Logger.LogInfo("OnGameStart: Preparing data");
+                ShowPreparing();
+
+                try
+                {
+                    launchedWith = selectedPackages
+                    .OrderByDescending(x => x.FlatPriority)
+                    .FirstOrDefault(x => x.CountedAsBranch)
+                    ?? currentBranch;
+
+                    Unlocker.StartGame(currentBranch, launchedWith, selectedPackages);
+                    ShowIngame();
+
+                    try
+                    {
+                        RegisterIngameTask.RegisterPlayerIngame(launchedWith.Name, () => OnlineManager.Initialize());
+                        DiscordManager.SetIngame(launchedWith?.Name ?? currentBranch.Name);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError(new Exception("Unable to register ingame", ex));
+                    }
+
+                    await Unlocker.WaitForGame();
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex);
+
+                    switch (ex)
+                    {
+                        case SteamNotRunningException _:
+                            MessageBoxHelper.ShowError("Steam is not running!");
+                            break;
+                        case UnableToRestoreException _:
+                            MessageBoxHelper.ShowError("Unable to restore backup! Manually rename -backup folders");
+                            break;
+                        case UnableToUnpackException _:
+                            MessageBoxHelper.ShowError("Unable to unpack data. Check permissions on modview or preview folders");
+                            break;
+                        default:
+                            MessageBoxHelper.ShowError("Unable to start. More info in loglog.log");
+                            break;
+                    }
+                }
+
+                Dispatcher.Invoke(() =>
+                {
+                    IsButtonsEnabledChange?.Invoke(true, null);
+                    launchedWith = null;                    
+                    MainWindow.CanBeClosed = true;
+                    MainWindow.HideLoading();
+
+                    try
+                    {
+                        RegisterIngameTask.RegisterPlayerIngame("Launcher", () => OnlineManager.Initialize());
+                        DiscordManager.SetInLauncher();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError(new Exception("Unable to register ingame", ex));
+                    }
+                });
+            });
         }
 
-        private void Unlocker_OnGameStarted(object sender, EventArgs e) => this.Dispatcher.Invoke((Action)(() =>
-       {
-           EventHandler buttonsEnabledChange = this.IsButtonsEnabledChange;
-           if (buttonsEnabledChange != null)
-               buttonsEnabledChange((object)false, (EventArgs)null);
-           MainWindow.ShowLoading("Ingame");
-       }));
-
-        private void Unlocker_OnGameExit(object sender, EventArgs e) => this.GameExited();
-
-        private void UnableToRestore(UnableToRestoreException ex)
+        private void ShowIngame()
         {
-            if (MessageBoxHelper.ShowError(ex.Message + ". Try again?", type: MessageBoxButton.YesNo) != MessageBoxResult.Yes)
-                return;
-            try
+            Dispatcher.InvokeAsync(() =>
             {
-                UnpackManager.RestoreData();
-            }
-            catch (Exception ex1)
-            {
-                UnableToRestoreException ex2 = new UnableToRestoreException("Unable to restore backup data", ex1);
-                Logger.LogError((Exception)ex2);
-                this.UnableToRestore(ex2);
-            }
+                IsButtonsEnabledChange?.Invoke(false, null);
+                MainWindow.ShowLoading("Ingame...");
+            });
         }
 
-        private void Unlocker_OnException(object sender, EventArgs e)
+        private void ShowPreparing()
         {
-            Exception ex = (Exception)sender;
-            switch (ex)
+            Dispatcher.Invoke(() =>
             {
-                case SteamNotRunningException _:
-                    Dispatcher.Invoke((Action)(() => MessageBoxHelper.ShowError("Steam is not running!")));
-                    break;
-                case UnableToRestoreException _:
-                    UnableToRestore((UnableToRestoreException)ex);
-                    break;
-                case UnableToUnpackException _:
-                    Dispatcher.Invoke((Action)(() => MessageBoxHelper.ShowError("Unable to unpack data. Check permissions on modview or preview folders")));
-                    break;
-                default:
-                    Dispatcher.Invoke((Action)(() => MessageBoxHelper.ShowError("Unable to start. More info in loglog.log")));
-                    break;
-            }
-            GameExited();
-        }
-
-        private void GameExited()
-        {
-            this.Dispatcher.Invoke((Action)(() =>
-           {
-               EventHandler buttonsEnabledChange = this.IsButtonsEnabledChange;
-               if (buttonsEnabledChange == null)
-                   return;
-               buttonsEnabledChange((object)true, (EventArgs)null);
-           }));
-            this.launchedWith = (Package)null;
-            DiscordManager.SetInLauncher();
-            MainWindow.CanBeClosed = true;
-            MainWindow.HideLoading();
-        }
-
-        public void OnLoggedIn()
-        {
+                IsButtonsEnabledChange?.Invoke(false, null);
+                MainWindow.ShowLoading("Preparing data...");
+            });
         }
 
         private void switchToVersus_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -230,12 +194,9 @@ namespace SMClient.Controls.LauncherWindow
             this.currentBranch = this.versus;
             this.versusBr.Foreground = (Brush)new SolidColorBrush(Color.FromRgb((byte)225, (byte)165, (byte)26));
             this.exBr.Foreground = (Brush)new SolidColorBrush(Color.FromRgb(byte.MaxValue, byte.MaxValue, byte.MaxValue));
-            EventHandler branchChanged = this.BranchChanged;
-            if (branchChanged != null)
-                branchChanged((object)null, (EventArgs)null);
-            if (e == null)
-                return;
-            e.Handled = true;
+            UpdatePackagesList();
+            if (e != null)
+                e.Handled = true;
         }
 
         private void switchToExt_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -245,12 +206,9 @@ namespace SMClient.Controls.LauncherWindow
             this.currentBranch = this.exterminatus;
             this.exBr.Foreground = (Brush)new SolidColorBrush(Color.FromRgb((byte)225, (byte)165, (byte)26));
             this.versusBr.Foreground = (Brush)new SolidColorBrush(Color.FromRgb(byte.MaxValue, byte.MaxValue, byte.MaxValue));
-            EventHandler branchChanged = this.BranchChanged;
-            if (branchChanged != null)
-                branchChanged((object)null, (EventArgs)null);
-            if (e == null)
-                return;
-            e.Handled = true;
+            UpdatePackagesList();
+            if (e != null)
+                e.Handled = true;
         }
 
         private void exBr_MouseEnter(object sender, MouseEventArgs e) => this.exBr.Foreground = (Brush)new SolidColorBrush(Color.FromRgb((byte)225, (byte)165, (byte)26));

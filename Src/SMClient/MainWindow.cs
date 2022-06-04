@@ -1,45 +1,37 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: SMClient.MainWindow
-// Assembly: SMClient, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 8FEFC3E2-D24F-47DA-A11F-015A247C9191
-// Assembly location: D:\Games\Warhammer 40.000 Space Marine Augmented\SMClient\SMClient.exe
-
-using LoadingIndicators.WPF;
+﻿using LoadingIndicators.WPF;
 using SMClient.Api;
-using SMClient.Controls.LauncherWindow;
-using SMClient.Data.Managers;
-using SMClient.Data.Managers.IntegrationManagers;
-using SMClient.Data.Tasks;
 using Steamworks;
 using System;
-using System.Linq;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Threading;
+using SMClient.Utils;
+using Managers;
+using System.Diagnostics;
+using SMClient.Managers;
+using SMClient.Tasks;
+using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace SMClient
 {
     public partial class MainWindow : Window, IComponentConnector
     {
         private static MainWindow instance;
-        private static bool Once;
-        private bool SteamInitializedFlag;
+
+        public static MainWindow Instance { get => instance; }
 
         private static LoadingIndicator LoadingIndicator { get; set; }
 
         private static Label LoadingIndicatorLabel { get; set; }
 
-        public static void ShowLoading(string message) => MainWindow.instance.ShowLoadingInternal(message);
+        public static void ShowLoading(string message) 
+        {
+            MainWindow.instance.ShowLoadingInternal(message);
+        } 
 
         private void ShowLoadingInternal(string message) => this.Dispatcher.Invoke((Action)(() =>
        {
@@ -65,120 +57,153 @@ namespace SMClient
         {
             try
             {
-                this.InitializeComponent();
+                InitializeComponent();
 
-                Application.Current.MainWindow = (Window)this;
-                MainWindow.instance = this;
-                MainWindow.CanBeClosed = true;
-                MainWindow.LoadingIndicator = this.loadingIndicator;
-                MainWindow.LoadingIndicatorLabel = this.loadingIndicatorLabel;
+                instance = this;
+                CanBeClosed = true;
+                LoadingIndicator = loadingIndicator;
+                LoadingIndicatorLabel = loadingIndicatorLabel;
 
-                this.InitApplication();
-                Task.Run((Action)(() => nonAuthorized.ContinueWithoutAuth()));
+                InitApplication();
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
+                ShowErrorAndExit("Unable to initialize the launcher!");
             }
+        }
+
+        private void ShowErrorAndExit(string message)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                MessageBoxHelper.ShowError(message);
+                Application.Current.Shutdown();
+            });
         }
 
         private void InitApplication()
         {
-            PersistenceManager.OnlineChecked += new PersistenceTask.AliveChecked(this.PersistenceManager_OnlineChecked);
-            this.nonAuthorized.LoggedIn += new EventHandler(this.OnLoggedIn);
-            this.authorized.LoggedOut += new EventHandler(this.Authorized_LoggedOut);
-            SteamManager.SteamInitialized += new EventHandler<bool>(this.SteamManager_SteamInitialized);
-            this.Oof();
-            BaseApi.Initialize();
-            Logger.Clear();
-            PersistenceManager.Initialize();
-            DiscordManager.Initialize();
-            SteamManager.Initialize();
-            this.SteamInitializedFlag = false;
-            if (!SteamManager.Initialized || this.SteamInitializedFlag)
-                return;
-            this.SteamManager_SteamInitialized((object)null, true);
-        }
-
-        private void SteamManager_SteamInitialized(object sender, bool e)
-        {
-            if (!SteamManager.Initialized)
-                return;
-            this.SteamInitializedFlag = true;
-            bool flag1 = SteamRemoteStorage.FileExists("profile_Vers.bin");
-            bool flag2 = SteamRemoteStorage.FileExists("profile_Exte.bin");
-            if (!flag1 || !flag2)
+            Task.Run(async () =>
             {
-                int fileSize = SteamRemoteStorage.GetFileSize("profile_info.bin");
-                byte[] pvData = new byte[fileSize];
-                if (SteamRemoteStorage.FileRead("profile_info.bin", pvData, fileSize) > 0)
+                ShowLoading("Initializing...");
+
+                var okay = BaseApi.Initialize();
+                if (!okay)
                 {
-                    if (!flag1)
-                        SteamRemoteStorage.FileWrite("profile_Vers.bin", pvData, fileSize);
-                    if (!flag2)
-                        SteamRemoteStorage.FileWrite("profile_Exte.bin", pvData, fileSize);
+                    ShowErrorAndExit("Unable to init API!");
+                    return;
                 }
-            }
 
-            Dispatcher.Invoke(async () =>
-            {
-                var listMeta = await BaseApi.GetFileMetadata("/GitGid.txt");
-                var listFile = await BaseApi.DownloadFile(listMeta);
-                var list = Encoding.UTF8.GetString(listFile.File);
-
-                if (!string.IsNullOrEmpty(list))
+                okay = SteamManager.Initialize();
+                if (!okay)
                 {
-                    var csteamIdList = list.Replace("\r\n", "\n").Split('\n').Where(x => !string.IsNullOrEmpty(x)).Select(x => new CSteamID(Convert.ToUInt64(x)));
-
-                    if (MainWindow.Once || !csteamIdList.Contains(SteamUser.GetSteamID()))
-                        return;
-                    MainWindow.Once = true;
-
-                    try
-                    {
-                        MessageBox.Show("WHAT R U CASUL? LMAO GIT GUD");
-                        Application.Current.Shutdown();
-                    }
-                    catch (Exception ex)
-                    {
-
-                    }
+                    ShowErrorAndExit("Steam initialization error!");
+                    return;
                 }
+
+                okay = ProfileInfoManager.CheckVanillaPlayed();
+                if (!okay)
+                {
+                    ShowErrorAndExit("Play vanilla at least once!");
+                    return;
+                }
+
+                ShowLoading("Checking for updates...");
+                await UpdateManager.CheckAutoupdater();
+                var hasUpdate = await UpdateManager.CheckUpdate();
+                if (hasUpdate)
+                {
+                    Process.Start("SMClientUpdater.exe", "");
+                    Application.Current.Shutdown();
+                    return;
+                }
+
+                ShowLoading("Authenticating...");
+                okay = await AuthManager.Authenticate();
+                if (!okay)
+                {
+                    ShowErrorAndExit("Authentication error!");
+                    return;
+                }
+
+                DiscordManager.Initialize();
+
+                HideLoading();
+                OnLoggedIn();
+
+                RegisterIngameTask.RegisterPlayerIngame("Launcher", () =>
+                {
+                    OnlineManager.Initialize();
+                });
+
+                DiscordManager.SetInLauncher();
+
+                try
+                {
+                    var changelog = await NewsManager.GetChangelog();
+                    FillChangelog(changelog);
+                }
+                catch (Exception ex)
+                {
+
+                }
+
+                InitializeProgress();
+
+                okay = await PackageManager.Initialize(
+                    new ProgressChangedEventHandler(DownloadProgress));
+                if (!okay)
+                {
+                    ShowErrorAndExit("Packages loading error!");
+                    return;
+                }
+
+                FinishProgress();
             });
         }
 
-        private void Authorized_LoggedOut(object sender, EventArgs e)
-        {
-            this.nonAuthorized.Visibility = Visibility.Visible;
-            this.authorized.Visibility = Visibility.Collapsed;
-        }
-
-        private void OnLoggedIn(object sender, EventArgs args)
+        private void OnLoggedIn()
         {
             Dispatcher.Invoke(() =>
             {
-                this.nonAuthorized.Visibility = Visibility.Collapsed;
-                this.authorized.Visibility = Visibility.Visible;
-                this.authorized.OnLoggedIn();
-
-                DiscordManager.SetInLauncher();
-            });            
+                nonAuthorized.Visibility = Visibility.Collapsed;
+                authorized.Visibility = Visibility.Visible;
+                authorized.OnLoggedIn();
+            });
         }
 
-        private void PersistenceManager_OnlineChecked(bool isAlive, bool needUpdate)
+        private void FillChangelog(string changelog)
         {
-            if (!needUpdate)
-                return;
-            this.Dispatcher.Invoke((Action)(() => this.Close()));
-        }
-
-        private void Oof()
-        {
-            foreach (string enumerateFile in Directory.EnumerateFiles("."))
+            Dispatcher.Invoke(() =>
             {
-                if (Path.GetExtension(enumerateFile) == ".pdb" && Path.GetFileNameWithoutExtension(enumerateFile) == "SMClientUpdater")
-                    File.Delete(enumerateFile);
-            }
+                authorized.homeScreen.FillNews(changelog);
+            });
+        }
+
+        private void InitializeProgress()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                authorized.InitializeProgress();
+            });
+        }
+
+        private void FinishProgress()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                authorized.playScreen.PackagesDownloaded();
+                authorized.FinishProgress();
+            });
+        }
+
+        private void DownloadProgress(object sender, ProgressChangedEventArgs e)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                authorized.DownloadProgress(e.ProgressPercentage);
+            });
         }
 
         private void btnMinimize_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) => this.WindowState = WindowState.Minimized;
@@ -187,7 +212,7 @@ namespace SMClient
         {
             try
             {
-                this.DragMove();
+                DragMove();
             }
             catch (Exception ex)
             {
@@ -198,9 +223,9 @@ namespace SMClient
 
         private void btnClose_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (!MainWindow.CanBeClosed)
+            if (!CanBeClosed)
                 return;
-            this.Close();
+            Close();
         }
 
         private void btnMinimize_MouseEnter(object sender, MouseEventArgs e) => this.btnMinimize.Foreground = (Brush)new SolidColorBrush(Color.FromRgb(byte.MaxValue, (byte)185, (byte)0));

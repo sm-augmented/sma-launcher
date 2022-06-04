@@ -1,13 +1,7 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: SMClient.Api.BaseApi
-// Assembly: SMClient, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 8FEFC3E2-D24F-47DA-A11F-015A247C9191
-// Assembly location: D:\Games\Warhammer 40.000 Space Marine Augmented\SMClient\SMClient.exe
-
-using Dropbox.Api;
+﻿using Dropbox.Api;
 using Dropbox.Api.Files;
 using Dropbox.Api.Stone;
-using SMClient.Data.Dropbox;
+using SMClient.Models.Dropbox;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,46 +16,59 @@ namespace SMClient.Api
 {
     public static class BaseApi
     {
+        public static bool Initialized { get; private set; }
+
         private static HttpClient HttpClient { get; set; }
 
         public static string ServerUrl { get; private set; }
 
         private static DropboxClient DriveService { get; set; }
 
-        public static void Initialize()
+        public static bool Initialize()
         {
-            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
-//#if DEBUG
-//            BaseApi.ServerUrl = "https://localhost:7205";
-//#else
-            BaseApi.ServerUrl = "https://smserver.azurewebsites.net";
-//#endif
+            try
+            {
+                ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+                //#if DEBUG
+                //            BaseApi.ServerUrl = "https://localhost:7205";
+                //#else
+                ServerUrl = "https://smserver.azurewebsites.net";
+                //#endif
 
-            BaseApi.HttpClient = new HttpClient();
-            BaseApi.HttpClient.BaseAddress = new Uri(BaseApi.ServerUrl);
-            BaseApi.HttpClient.DefaultRequestHeaders.Accept.Clear();
-            BaseApi.HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpClient = new HttpClient();
+                HttpClient.BaseAddress = new Uri(ServerUrl);
+                HttpClient.DefaultRequestHeaders.Accept.Clear();
+                HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            HttpClient httpClient = new HttpClient(new WebRequestHandler
+                HttpClient httpClient = new HttpClient(new WebRequestHandler
+                {
+                    ReadWriteTimeout = 1000000
+                })
+                {
+                    Timeout = TimeSpan.FromHours(20.0)
+                };
+
+                DropboxClientConfig config = new DropboxClientConfig()
+                {
+                    HttpClient = httpClient
+                };
+                config.HttpClient.Timeout = new TimeSpan(0, 20, 0);
+                DriveService = new DropboxClient("GMYvCUyDLY0AAAAAAAAHmqhC69m6_8AjWfuYBLXGPKchtZ0ZWf--MfwdFM0rkkvZ", config);
+                Initialized = true;
+            }
+            catch (Exception ex)
             {
-                ReadWriteTimeout = 1000000
-            })
-            {
-                Timeout = TimeSpan.FromHours(20.0)
-            };
-            DropboxClientConfig config = new DropboxClientConfig()
-            {
-                HttpClient = httpClient
-            };
-            config.HttpClient.Timeout = new TimeSpan(0, 20, 0);
-            BaseApi.DriveService = new DropboxClient("GMYvCUyDLY0AAAAAAAAHmqhC69m6_8AjWfuYBLXGPKchtZ0ZWf--MfwdFM0rkkvZ", config);
+                Logger.LogError(new Exception("API initialization exception", ex));
+            }
+
+            return Initialized;
         }
 
         public static void SetToken()
         {
-            if (BaseApi.HttpClient.DefaultRequestHeaders.Contains("Authorization"))
-                BaseApi.HttpClient.DefaultRequestHeaders.Remove("Authorization");
-            BaseApi.HttpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + Settings.Instance.AccessToken);
+            if (HttpClient.DefaultRequestHeaders.Contains("Authorization"))
+                HttpClient.DefaultRequestHeaders.Remove("Authorization");
+            HttpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + Settings.Instance.AccessToken);
         }
 
         public static async Task<string> GetStringAsync(string url) => await BaseApi.HttpClient.GetStringAsync(url);
