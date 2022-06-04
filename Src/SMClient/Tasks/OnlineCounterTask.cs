@@ -5,14 +5,13 @@
 // Assembly location: D:\Games\Warhammer 40.000 Space Marine Augmented\SMClient\SMClient.exe
 
 using SMClient.Api;
-using SMClient.Data.Managers;
 using SMClient.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SMClient.Data.Tasks
+namespace SMClient.Tasks
 {
   public static class OnlineCounterTask
   {

@@ -5,8 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-
-using SMClient.Data.Managers;
+using SMClient.Managers;
 using SMClient.Models;
 
 namespace SMClient.Controls.LauncherWindow
@@ -48,19 +47,20 @@ namespace SMClient.Controls.LauncherWindow
         {
             ToggleButtonsEnabled(false);
             MainWindow.ShowLoading("Processing...");
-            Task.Run((() =>
-           {
-               try
-               {
-                   PackageManager.ReUnpackStaticArchives();
-               }
-               catch (Exception ex)
-               {
-                   Logger.LogError(ex);
-               }
-               MainWindow.HideLoading();
-               ToggleButtonsEnabled(true);
-           }));
+            Dispatcher.InvokeAsync(() =>
+            {
+                try
+                {
+                    PackageManager.ReUnpackStaticArchives();
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex);
+                }
+
+                MainWindow.HideLoading();
+                ToggleButtonsEnabled(true);
+            });
         }
 
         private void GameDir_Loaded(object sender, RoutedEventArgs e)
@@ -78,7 +78,5 @@ namespace SMClient.Controls.LauncherWindow
             Settings.Instance.StartWindowed = this.cbWindowed.IsChecked;
             Settings.Instance.Save();
         }
-
-        private void btnFixProfileFile_Click(object sender, RoutedEventArgs e) => ProfileInfo.RecreateModProfile(true);
     }
 }

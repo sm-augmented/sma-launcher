@@ -52,7 +52,7 @@
           <StackPanel x:Name="packagesPanel"/>
         </ScrollViewer>
       </Grid>
-      <controls:PlayButton HorizontalAlignment="Center" VerticalAlignment="Bottom" ButtonLabel="LAUNCH" Click="OnGameStart"
+      <controls:PlayButton HorizontalAlignment="Center" VerticalAlignment="Bottom" ButtonLabel="LAUNCH" Click="StartGame"
                            FontSize="14" Margin="436,0,289,50" IsEnabled="{Binding ElementName=root, Path=IsButtonsEnabled}"/>
     </Grid>
   </Grid>

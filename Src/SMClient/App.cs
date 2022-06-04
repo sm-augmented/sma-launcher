@@ -1,12 +1,7 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: SMClient.App
-// Assembly: SMClient, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 8FEFC3E2-D24F-47DA-A11F-015A247C9191
-// Assembly location: D:\Games\Warhammer 40.000 Space Marine Augmented\SMClient\SMClient.exe
-
-using Hardcodet.Wpf.TaskbarNotification;
+﻿using Hardcodet.Wpf.TaskbarNotification;
 using SMClient.Api;
-using SMClient.Data.Managers.IntegrationManagers;
+using SMClient.Managers;
+using SMClient.Utils;
 using System;
 using System.CodeDom.Compiler;
 using System.Diagnostics;
@@ -26,8 +21,8 @@ namespace SMClient
 
         public App()
         {
-            this.DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(this.App_DispatcherUnhandledException);
-            this.appIcon = new BitmapImage(new Uri("pack://application:,,,/SMClient;component/Resources/AppIcon.ico"));
+            DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(App_DispatcherUnhandledException);
+            appIcon = new BitmapImage(new Uri("pack://application:,,,/SMClient;component/Resources/AppIcon.ico"));
             MainWindow = new MainWindow();
         }
 
@@ -84,6 +79,16 @@ namespace SMClient
         [GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
         public static void Main()
         {
+            try
+            {
+                Logger.Create();
+            }
+            catch (Exception ex)
+            {
+                MessageBoxHelper.ShowError("Unable to init log!");
+                return;
+            }
+
             App app = new App();
             app.InitializeComponent();
             app.Run(app.MainWindow);
