@@ -9,7 +9,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SMClient.Data.Tasks
+namespace SMClient.Tasks
 {
   public class RegisterIngameTask
   {
