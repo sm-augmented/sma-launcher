@@ -42,11 +42,11 @@ namespace Managers
         {
             var hasUpdate = false;
 #if DEBUG
-            
+
 #else
             try
             {
-                hasUpdate = await HashApi.CheckHashByFile("/SMClient.exe", Assembly.GetEntryAssembly().Location);
+                hasUpdate = !await HashApi.CheckHashByFile("/SMClient.exe", Assembly.GetEntryAssembly().Location);
             }
             catch (Exception ex)
             {
