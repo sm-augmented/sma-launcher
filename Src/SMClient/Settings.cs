@@ -35,7 +35,7 @@ namespace SMClient
 
         public bool UseNoHud { get; set; }
 
-        public bool FirstTime { get; set; }
+        public bool BetaChannel { get; set; }
 
         [XmlIgnore]
         public string SpaceMarineEXEPath => Path.Combine(this.GamePath, "SpaceMarine.exe");

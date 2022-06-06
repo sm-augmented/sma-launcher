@@ -24,6 +24,7 @@ namespace SMClient.Controls.LauncherWindow
             GameDir.SelectedDirectory = Settings.Instance.GamePath;
             cbOldLauchWay.IsChecked = Settings.Instance.OldLaunchWay;
             cbWindowed.IsChecked = Settings.Instance.StartWindowed;
+            cbBeta.IsChecked = Settings.Instance.BetaChannel;
         }
 
         private void ToggleButtonsEnabled(bool enabled) => this.Dispatcher.Invoke((Action)(() => btnCheckIntegrity.IsEnabled = enabled));
@@ -76,6 +77,12 @@ namespace SMClient.Controls.LauncherWindow
         private void cbWindowed_Checked(object sender, EventArgs e)
         {
             Settings.Instance.StartWindowed = this.cbWindowed.IsChecked;
+            Settings.Instance.Save();
+        }
+
+        private void cbBeta_Checked(object sender, EventArgs e)
+        {
+            Settings.Instance.BetaChannel = this.cbBeta.IsChecked;
             Settings.Instance.Save();
         }
     }

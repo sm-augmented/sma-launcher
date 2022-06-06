@@ -20,7 +20,19 @@ namespace SMClient.Api
             string str = "/";
             try
             {
-                IDownloadResponse<FileMetadata> fileMeta = await BaseApi.GetFileMetadata(str + Settings.Instance.GetArchiveNameByBranch(branch));
+                IDownloadResponse<FileMetadata> betaMeta = null;
+                if (Settings.Instance.BetaChannel)
+                {
+                    try
+                    {
+                        betaMeta = await BaseApi.GetFileMetadata(str + branch.Name + "_Beta.sma");
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+                IDownloadResponse<FileMetadata> fileMeta = betaMeta != null ? betaMeta : await BaseApi.GetFileMetadata(str + Settings.Instance.GetArchiveNameByBranch(branch));
                 if (!HashApi.CheckDataHash(branch, fileMeta.Response.ContentHash))
                 {
                     Logger.LogInfo("Data update - " + branch.Name + ":" + branch.Version);
