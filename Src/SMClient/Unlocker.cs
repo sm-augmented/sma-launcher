@@ -1,7 +1,6 @@
 ﻿using SMClient.Managers;
 using SMClient.Models;
 using SMClient.Models.Exceptions;
-using SMClient.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
