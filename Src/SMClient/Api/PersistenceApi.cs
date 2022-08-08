@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using SMClient.Managers;
 using SMClient.Models;
+using Steamworks;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
