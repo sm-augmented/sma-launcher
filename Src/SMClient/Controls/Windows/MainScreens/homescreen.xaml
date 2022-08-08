@@ -23,7 +23,7 @@
                Foreground="White" AllowDrop="false" Focusable="false" IsReadOnly="true"
                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="true"
-               BorderThickness="0" FontSize="14" Padding="5,5,0,0" Margin="0,0,0,43" BorderBrush="{x:Null}"
+               BorderThickness="0" FontSize="14" Padding="5,5,0,0" Margin="0,0,0,56" BorderBrush="{x:Null}"
                Background="{x:Null}">Loading changelog...</TextBox>
     </Grid>
   </Grid>
