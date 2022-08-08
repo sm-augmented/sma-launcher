@@ -11,7 +11,7 @@ namespace SMClient.Api
   {
     public static async Task<bool> UnregisterPlayerIngame() => (await BaseApi.PostAsync("persistence/unregisterUserIngame?uid=" + AuthManager.GetUsername(true))).IsSuccessStatusCode;
 
-    public static async Task<bool> RegisterPlayerIngame(string branch) => (await BaseApi.PostAsync("persistence/registerUserIngame?branch=" + branch + "&uid=" + AuthManager.GetUsername(true))).IsSuccessStatusCode;
+    public static async Task<bool> RegisterPlayerIngame(string branch) => (await BaseApi.PostAsync("persistence/registerUserIngame?branch=" + branch + "&uid=" + AuthManager.GetUsername(true) + "&steamid=" + SteamUser.GetSteamID().ToString())).IsSuccessStatusCode;
 
     public static async Task<Dictionary<string, UserPing>> GetUsersDetails() => JsonConvert.DeserializeObject<Dictionary<string, UserPing>>(await BaseApi.GetStringAsync("persistence/getUsersDetails"));
   }
