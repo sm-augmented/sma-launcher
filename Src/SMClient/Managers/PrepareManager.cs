@@ -1,4 +1,5 @@
-﻿using SMClient.Models;
+﻿using Models.Exceptions;
+using SMClient.Models;
 using SMClient.Models.Exceptions;
 using SMClient.Utils;
 using System;
@@ -84,7 +85,7 @@ namespace SMClient.Managers
                     Logger.LogError(new Exception("Unable to restore backupped data", ex2));
                 }
 
-                throw new SMException("Unable to backup data", ex);
+                throw new UnableToUnpackException("Unable to backup data", ex);
             }
         }
 

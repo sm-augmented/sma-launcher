@@ -19,8 +19,8 @@ namespace SMClient.Steam
       CallResult<LobbyMatchList_t>.APIDispatchDelegate callback)
     {
       SteamMatchmaking.AddRequestLobbyListDistanceFilter(ELobbyDistanceFilter.k_ELobbyDistanceFilterWorldwide);
-      SteamMatchmaking.AddRequestLobbyListFilterSlotsAvailable(1);
-      SteamMatchmaking.AddRequestLobbyListResultCountFilter(1000);
+      //SteamMatchmaking.AddRequestLobbyListFilterSlotsAvailable(1);
+      //SteamMatchmaking.AddRequestLobbyListResultCountFilter(1000);
       SteamAPICall_t hAPICall = SteamMatchmaking.RequestLobbyList();
       Matchmaking.m_CallResultLobbyMatchList.Set(hAPICall, callback);
     }

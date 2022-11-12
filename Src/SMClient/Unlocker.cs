@@ -19,6 +19,11 @@ namespace SMClient
 
         public static void StartGame(Package branch, Package profileBranch, List<Package> packages)
         {
+            var f = Path.Combine(Settings.Instance.GamePath, "SMA.dll.idb");
+            if (File.Exists(f))
+            {
+                File.Delete(f);
+            }
             Logger.LogInfo("StartGame: Starting the game in " + branch.Name + " as " + profileBranch.Name + " with: " + string.Join(", ", packages.Select(x => x.Name)) + ".");
 
             if (!IsSteamRunning)

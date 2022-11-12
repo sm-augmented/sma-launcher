@@ -132,21 +132,24 @@ namespace SMClient.Controls.LauncherWindow
                 {
                     Logger.LogError(ex);
 
-                    switch (ex)
+                    this.Dispatcher.Invoke((Action)(() =>
                     {
-                        case SteamNotRunningException _:
-                            MessageBoxHelper.ShowError("Steam is not running!");
-                            break;
-                        case UnableToRestoreException _:
-                            MessageBoxHelper.ShowError("Unable to restore backup! Manually rename -backup folders");
-                            break;
-                        case UnableToUnpackException _:
-                            MessageBoxHelper.ShowError("Unable to unpack data. Check permissions on modview or preview folders");
-                            break;
-                        default:
-                            MessageBoxHelper.ShowError("Unable to start. More info in loglog.log");
-                            break;
-                    }
+                        switch (ex)
+                        {
+                            case SteamNotRunningException _:
+                                MessageBoxHelper.ShowError("Steam is not running!");
+                                break;
+                            case UnableToRestoreException _:
+                                MessageBoxHelper.ShowError("Unable to restore backup! Manually rename -backup folders in game folder");
+                                break;
+                            case UnableToUnpackException _:
+                                MessageBoxHelper.ShowError("Unable to unpack/backup data. Check access to preview and modview folders in game folder or manually delete/rename them and use 'Fix mod integrity'");
+                                break;
+                            default:
+                                MessageBoxHelper.ShowError("Unable to start. More info in loglog.log");
+                                break;
+                        }
+                    }));                    
                 }
 
                 Dispatcher.Invoke(() =>

@@ -46,9 +46,13 @@ namespace SMClient.Controls.LauncherWindow
 
         private void btnCheckIntegrity_Click(object sender, RoutedEventArgs e)
         {
-            ToggleButtonsEnabled(false);
-            MainWindow.ShowLoading("Processing...");
-            Dispatcher.InvokeAsync(() =>
+            Dispatcher.Invoke(() =>
+            {
+                ToggleButtonsEnabled(false);
+                MainWindow.ShowLoading("Processing...");
+            });
+            
+            Task.Run(() =>
             {
                 try
                 {
@@ -59,9 +63,12 @@ namespace SMClient.Controls.LauncherWindow
                     Logger.LogError(ex);
                 }
 
-                MainWindow.HideLoading();
-                ToggleButtonsEnabled(true);
-            });
+                Dispatcher.Invoke(() =>
+                {
+                    MainWindow.HideLoading();
+                    ToggleButtonsEnabled(true);
+                });
+            });            
         }
 
         private void GameDir_Loaded(object sender, RoutedEventArgs e)
