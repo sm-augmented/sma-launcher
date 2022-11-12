@@ -104,8 +104,8 @@ namespace SMClient.Managers
                 List<Package> list = PackageManager.Packages.Where<Package>((Func<Package, bool>)(x => !x.IsLoaded)).ToList<Package>();
                 if (list.Count > 0)
                     throw new SMException("Failed to load packages: " + string.Join(",", list.Select<Package, string>((Func<Package, string>)(x => x.Name))));
-                if (PackageManager.Packages.Where<Package>((Func<Package, bool>)(x => x.IsStatic)).Any<Package>((Func<Package, bool>)(x => x.IsUpdated)) || !Directory.Exists(Settings.Instance.ModPreviewPath) || !Directory.Exists(Path.Combine(Settings.Instance.ModPreviewPath, "art")))
-                    PackageManager.ReUnpackStaticArchives(onDownloadProgress, onDownloadComplete);
+
+                ReUnpackStaticArchives(onDownloadProgress, onDownloadComplete);
             }
             catch (Exception ex)
             {
@@ -116,8 +116,14 @@ namespace SMClient.Managers
         public static void ReUnpackStaticArchives(ProgressChangedEventHandler onDownloadProgress = null,
           EventHandler onDownloadComplete = null)
         {
-            IEnumerable<Package> packages = PackageManager.Packages.Where(x => x.IsStatic);
-            PrepareManager.RemoveStaticData();
+            var verMkrUpdated = Packages.FirstOrDefault(x => x.Name == "BaseArt_RelMkr")?.IsUpdated ?? false;
+            if (verMkrUpdated)
+            {
+                PrepareManager.RemoveStaticData();
+            }
+
+            var fullReunpack = verMkrUpdated || !Directory.Exists(Settings.Instance.ModPreviewPath) || !Directory.Exists(Path.Combine(Settings.Instance.ModPreviewPath, "art"));
+            IEnumerable<Package> packages = Packages.Where(x => x.IsStatic && (x.IsUpdated || fullReunpack));
             foreach (Package package in packages)
                 ArchiveManager.UnpackStaticWithDeps(package, onDownloadProgress, onDownloadComplete);
         }
